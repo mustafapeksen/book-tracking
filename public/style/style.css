@@ -1,0 +1,67 @@
+body {
+    max-width: 40em;
+    margin: 0 auto;
+    padding: 5px;
+    font-family: Georgia, serif;
+    font-size: 20px;
+    line-height: 30px;
+    background-color: #fff;
+    color: #000;
+}
+
+.header-title {
+    line-height: 1em;
+    font-size: 3em;
+    font-family: "Valkyrie C4";
+    font-weight: normal;
+    font-style: normal;
+}
+
+.read-books {
+    line-height: 1em;
+    font-size: 2em;
+    font-family: "Valkyrie C4";
+    font-weight: normal;
+    font-style: normal;
+}
+
+a {
+    text-decoration: none;
+    color: #20b;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    line-height: 1em;
+}
+
+h2,
+h3 {
+    margin-top: 2em;
+}
+
+section {
+    margin-bottom: 4em;
+}
+
+.book {
+    margin: 0 0 8em 0;
+}
+
+figure {
+    margin: 0;
+}
+
+small {
+    font-size: 0.8em;
+    color: #666;
+}
+
+figure img {
+    float: left;
+    margin-right: 2em;
+}

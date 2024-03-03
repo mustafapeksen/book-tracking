@@ -1,0 +1,39 @@
+<%- include('partials/header.ejs') %>
+
+    <div class="content">
+        <figure>
+            <a href="https://covers.openlibrary.org/b/isbn/<%-books.isbn%>-L.jpg"><img loading="lazy"
+                    src="https://covers.openlibrary.org/b/isbn/<%-books.isbn%>-M.jpg" alt="<%- books.book_title %>"></a>
+        </figure>
+        <h2>
+            <%= books.book_title %> - by <%= books.author %>
+        </h2>
+        <small>
+            ISBN: <%= books.isbn %> <br />
+                Okuma Tarihi: <%= books.date_read %> <br />
+                    Bu kitabı <strong>
+                        <%= books.like_score %>
+                    </strong>/10 sevdim <br />
+        </small>
+        <p class="amazon-page"><a href="https://www.amazon.com.tr/s?k=<%- books.isbn %>">Amazon sayfasına</a> göz
+            atabilirsiniz.</p>
+
+        <h3>Özet</h3>
+        <% summaryParagraphs.forEach(paragraph=> { %>
+            <p class="summary">
+                <%= paragraph %>
+            </p>
+            <% }) %>
+
+                <h3>Kitap Hakkında Düşüncelerim</h3>
+                <% noteParagraphs.forEach(paragraph=> { %>
+                    <p class="notes">
+                        <%= paragraph %>
+                    </p>
+                    <% }) %>
+                        <h4>Kitabın Yazarı</h4>
+                        <img src="https://covers.openlibrary.org/a/olid/<%- olid %>-M.jpg" alt="<%- books.author %>">
+
+    </div>
+
+    <%- include('partials/footer.ejs') %>

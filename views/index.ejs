@@ -1,0 +1,61 @@
+<%- include('partials/header.ejs') %>
+
+    <section class="information">
+        <h2 class="read-books">Okuduğum Kitaplar</h2>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat nobis distinctio, quasi ipsam ex cupiditate
+            tempore consequuntur ipsum enim et dicta eveniet. Architecto error enim molestias vero similique qui
+            assumenda!
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Delectus et officiis alias reiciendis? Facere,
+            unde
+            officiis quam delectus eos rerum sapiente. Laborum maiores nihil voluptate ad illum sequi soluta earum!
+            Lorem
+            ipsum dolor sit, amet consectetur adipisicing elit. Dicta, voluptatem iste voluptatum consequuntur dolore
+            nihil
+            porro itaque rem natus dolorem architecto eveniet ipsa voluptatibus pariatur tenetur autem officia ipsum
+            atque?
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Doloremque corporis dolores natus, quam velit
+            culpa
+            ea, ex id sequi, quod iusto. Recusandae cumque excepturi eveniet tempore fugiat vitae totam laborum.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus assumenda consectetur aut quaerat delectus
+            reprehenderit placeat aliquid alias molestias perspiciatis, dicta, distinctio quod. Explicabo beatae tenetur
+            inventore saepe at ut.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro eius assumenda repellendus velit officiis,
+            amet,
+            possimus saepe mollitia cumque dicta illum provident? Tenetur quos quas totam sed et cumque molestias! Lorem
+            ipsum dolor sit amet consectetur, adipisicing elit. Voluptatum, provident neque natus quos minus quam fugit
+            accusamus in eius consectetur porro ipsa assumenda beatae rerum perferendis id facere nisi saepe.</p>
+    </section>
+    <hr>
+    <section class="all-books">
+        <% for( let item of bookItems ) { %>
+            <div class="book">
+                <figure>
+                    <a href="/book/<%- item.book_title %>">
+                        <img loading="lazy" src="https://covers.openlibrary.org/b/isbn/<%-item.isbn%>-M.jpg"
+                            alt="<%- item.book_title %>">
+                    </a>
+                </figure>
+                <a href="/book/<%- item.book_title %>">
+                    <h3>
+                        <%= item.book_title %> - by <%= item.author%>
+                    </h3>
+                </a>
+                <small>
+                    <%= item.date_read %> Bu kitabı <strong>
+                            <%=item.like_score%>
+                        </strong>/10 sevdim
+                </small>
+                <p>
+                    <%= item.summary %>
+                </p>
+                <P><a href="/book/<%- item.book_title %>">Benim düşüncelerimi </a>okuyabilirisiniz veya <a
+                        href="https://www.amazon.com.tr/s?k=<%- item.isbn %>">Amazon sayfasına</a> göz
+                    atabilirsiniz.</P>
+            </div>
+            <% } %>
+
+    </section>
+
+
+
+    <%- include('partials/footer.ejs') %>
