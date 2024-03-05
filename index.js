@@ -32,29 +32,48 @@ app.get("/", async (req, res) => {
 
 // Handling GET requests to the '/book/:name' endpoint
 app.get("/book/:name", async (req, res) => {
-    const bookName = req.params.name; // Extracting the book name from the request parameters
+    try {
+        const bookName = req.params.name; // Get the book name from the URL parameter
 
-    // Querying the database to retrieve detailed information about a specific book
-    const result = await db.query("SELECT books.book_title, books.isbn, books.author, scores.date_read, scores.like_score, notes.summary, notes.note FROM books JOIN scores ON books.id = scores.book_id JOIN notes ON books.id = notes.book_id WHERE books.book_title = $1", [bookName]);
+        // Query the database to retrieve detailed information about a specific book
+        const result = await db.query("SELECT books.book_title, books.isbn, books.author, scores.date_read, scores.like_score, notes.summary, notes.note FROM books JOIN scores ON books.id = scores.book_id JOIN notes ON books.id = notes.book_id WHERE books.book_title = $1", [bookName]);
 
-    const information = result.rows[0]; // Storing the retrieved book information
+        // If the book is not found in the database, send an appropriate message to the client
+        if (result.rows.length === 0) {
+            return res.render("book_not_found.ejs", { bookName: bookName });
+        }
 
-    // Splitting the summary and note into paragraphs based on double line breaks
-    const summaryParagraphs = information.summary.split('\n\n');
-    const noteParagraphs = information.note.split('\n\n');
+        const information = result.rows[0]; // Store the retrieved book information
 
-    // Fetching book cover information from the Open Library Covers API using ISBN
-    const resultJson = await axios.get(`https://covers.openlibrary.org/b/isbn/${information.isbn}.json`);
-    const data = resultJson.data; // Storing the fetched data
+        // Split the summary and note into paragraphs based on double line breaks
+        const summaryParagraphs = information.summary.split('\n\n');
+        const noteParagraphs = information.note.split('\n\n');
 
-    // Rendering the 'book.ejs' template with book details, summary, note, and cover information
-    res.render("book.ejs", {
-        books: information,
-        summaryParagraphs: summaryParagraphs,
-        noteParagraphs: noteParagraphs,
-        olid: data.olid
-    });
+        // Fetch book cover information from the Open Library Covers API using ISBN
+        let olid;
+        try {
+            const resultJson = await axios.get(`https://covers.openlibrary.org/b/isbn/${information.isbn}.json`);
+            const data = resultJson.data; // Store the retrieved data
+            olid = data.olid;
+        } catch (error) {
+            console.error("An error occurred during the API request:", error);
+            // If there is an error with the API request, olid can be left empty or assigned a default value
+        }
+
+        // Render the 'book.ejs' template with book details, summary, note, and cover information
+        res.render("book.ejs", {
+            books: information,
+            summaryParagraphs: summaryParagraphs,
+            noteParagraphs: noteParagraphs,
+            olid: olid
+        });
+    } catch (error) {
+        // Handle any errors that occur during the process
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
 });
+
 
 app.get("/add", async (req, res) => {
     const result = await db.query("SELECT id FROM books ORDER BY id DESC LIMIT 1");
@@ -63,11 +82,28 @@ app.get("/add", async (req, res) => {
     res.render("add.ejs", { id: id });
 });
 
+function capitalizeEveryWord(sentence) {
+    // Convert the sentence to lowercase and split it into words
+    const words = sentence.split(" ");
+
+    // Capitalize the first letter of each word
+    for (let i = 0; i < words.length; i++) {
+        words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
+    }
+
+    // Join the capitalized words back into a sentence
+    return words.join(" ");
+}
+
+
+
+
 app.post("/add", async (req, res) => {
     console.log(req.body);
-    const bookTitle = req.body.book_title;
-    const isbn = req.body.isbn;
-    const author = req.body.author;
+
+    const bookTitle = capitalizeEveryWord(req.body.book_title);
+    const isbn = capitalizeEveryWord(req.body.isbn) ;
+    const author = capitalizeEveryWord(req.body.author) ;
     const summary = req.body.summary;
     const note = req.body.note;
     const likeScore = req.body.like_score;
@@ -84,3 +120,5 @@ app.post("/add", async (req, res) => {
 app.listen(port, () => {
     console.log(`Listening on port ${port}`); // Logging a message indicating that the server is running
 });
+
+

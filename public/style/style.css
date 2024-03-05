@@ -3,7 +3,7 @@ body {
     margin: 0 auto;
     padding: 5px;
     font-family: "Cormorant Garamond", serif;
-    font-weight: 500;
+    font-weight: 400;
     font-style: normal;
     font-size: 20px;
     line-height: 30px;
@@ -159,6 +159,7 @@ label {
     justify-content: center;
 }
 
-.book h3{
+.book h3,
+.content h2,.content h3 {
     color: brown;
 }
