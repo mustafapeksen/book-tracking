@@ -22,7 +22,7 @@ db.connect(); // Connecting to the PostgreSQL database
 // Handling GET requests to the root endpoint
 app.get("/", async (req, res) => {
     // Querying the database to retrieve book information including title, ISBN, author, etc.
-    const result = await db.query("SELECT books.book_title,books.isbn,books.author , scores.date_read,scores.like_score, notes.summary FROM books JOIN scores ON books.id = scores.book_id JOIN notes ON books.id = notes.book_id ORDER BY scores.like_score DESC");
+    const result = await db.query("SELECT books.book_title,books.isbn,books.author,books.id , scores.date_read,scores.like_score, notes.summary FROM books JOIN scores ON books.id = scores.book_id JOIN notes ON books.id = notes.book_id ORDER BY scores.like_score DESC");
 
     const information = result.rows; // Storing the retrieved data from the database
 
@@ -93,7 +93,7 @@ function capitalizeEveryWord(sentence) {
 
     // Join the capitalized words back into a sentence
     return words.join(" ");
-}
+};
 
 
 
@@ -102,8 +102,8 @@ app.post("/add", async (req, res) => {
     console.log(req.body);
 
     const bookTitle = capitalizeEveryWord(req.body.book_title);
-    const isbn = capitalizeEveryWord(req.body.isbn) ;
-    const author = capitalizeEveryWord(req.body.author) ;
+    const isbn = capitalizeEveryWord(req.body.isbn);
+    const author = capitalizeEveryWord(req.body.author);
     const summary = req.body.summary;
     const note = req.body.note;
     const likeScore = req.body.like_score;
@@ -113,6 +113,15 @@ app.post("/add", async (req, res) => {
     await db.query("INSERT INTO books(book_title, isbn, author) VALUES($1,$2,$3)", [bookTitle, isbn, author]);
     await db.query("INSERT INTO notes VALUES($1,$2,$3)", [summary, note, bookId]);
     await db.query("INSERT INTO scores VALUES($1,$2,$3)", [likeScore, bookId, dateRead]);
+    res.redirect("/");
+});
+
+app.post("/delete", async (req, res) => {
+    const deleteId = req.body['book-id'];
+    await db.query("DELETE FROM scores WHERE book_id = $1", [deleteId]);
+    await db.query("DELETE FROM notes WHERE book_id = $1", [deleteId]);
+    await db.query("DELETE FROM books WHERE id = $1", [deleteId]);
+
     res.redirect("/");
 });
 

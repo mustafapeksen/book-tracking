@@ -28,7 +28,11 @@
     <hr>
     <section class="all-books">
         <% for( let item of bookItems ) { %>
-            <div class="book">
+            <div class="book-<%- item.id %>">
+                <form action="/delete" method="post">
+                    <input class="delete" type="submit" value="X">
+                    <input type="number" hidden="true" name="book-id" id="book-id" value="<%- item.id %>">
+                </form>
                 <figure>
                     <a href="/book/<%- item.book_title %>">
                         <img loading="lazy" src="https://covers.openlibrary.org/b/isbn/<%-item.isbn%>-M.jpg"
@@ -57,7 +61,7 @@
     </section>
 
     <form action="/add" method="get">
-        <a class="btn" href="/add">+</a>
+        <input class="btn" type="submit" value="+">
     </form>
 
 

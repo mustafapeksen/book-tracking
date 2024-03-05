@@ -75,17 +75,17 @@ figure img {
 .btn {
     position: relative;
     background-color: beige;
-    padding: 0.5em;
-    padding-left: 1em;
-    padding-right: 1em;
+    padding: 0.3em 0.9em;
+
     border-radius: 10px;
     font-size: 1.5em;
     left: 25em;
-    bottom: 3em;
+    transition: transform 0.3s ease-in-out;
 }
 
 .btn:hover {
     background-color: rgb(218, 218, 199);
+    transform: scale(1.1);
 }
 
 label {
@@ -132,6 +132,8 @@ label {
 .submit {
     position: relative;
     left: 50%;
+    height: 3em;
+    width: 9em;
 }
 
 .social-media {
@@ -160,6 +162,26 @@ label {
 }
 
 .book h3,
-.content h2,.content h3 {
+.content h2,
+.content h3 {
     color: brown;
+}
+
+.delete {
+    position: relative;
+    top: 100px;
+    left: 92%;
+    padding: 10px 20px;
+    border-radius: 50%;
+    border: 0;
+    background-color: red;
+    color: #fff;
+    font-size: 1.25em;
+    transition: transform 0.3s ease-in-out;
+}
+
+.delete:hover {
+    background-color: rgb(231, 0, 0);
+    cursor: pointer;
+    transform: scale(0.9);
 }
