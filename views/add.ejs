@@ -1,5 +1,27 @@
 <%- include('partials/header.ejs') %>
-<Form:post></Form:post>
+    <form action="/add" method="post">
+        <label for="book_title">Kitabın Adı:</label>
+        <input class="book-input" type="text" required name="book_title" id="book_title"><br /><br />
+        <label for="isbn">ISBN: </label>
+        <input class="book-input isbn" type="number" required name="isbn" id="isbn">
+        <label for="author"> Yazar Adı: </label>
+        <input class="book-input" type="text" required name="author" id="author"><br /><br />
+
+        <label class="text-zone" for="summary">Özet</label><br /><br />
+        <textarea class="book-input" name="summary" id="summary" cols="30" rows="10"></textarea><br /><br />
+        <label class="text-zone" for="note">Notlar</label><br /><br />
+        <textarea class="book-input" name="note" id="note" cols="30" rows="10"></textarea><br /><br />
+
+        <input hidden="true" required type="number" name="book_id" id="book_id" value=<%=id %>>
+        <label for="like_score">10 üzerinden ne kadar sevdin?</label>
+        <input class="book-input" type="number" min="0" max="10" required name="like_score" id="like_score"><br /><br />
+        <label for="date_read">Kitabı Bitirdiğin tarih: </label>
+        <input class="book-input" type="text" required name="date_read" id="date_read"
+            placeholder="YYYY-MM-DD"><br /><br />
+
+        <input class="submit" type="submit" value="Kitabı Kaydet">
+    </form><br /><br />
 
 
-<%- include('partials/footer.ejs') %>
+
+    <%- include('partials/footer.ejs') %>

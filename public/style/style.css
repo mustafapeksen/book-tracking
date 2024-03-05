@@ -2,7 +2,9 @@ body {
     max-width: 40em;
     margin: 0 auto;
     padding: 5px;
-    font-family: Georgia, serif;
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-style: normal;
     font-size: 20px;
     line-height: 30px;
     background-color: #fff;
@@ -15,6 +17,10 @@ body {
     font-family: "Valkyrie C4";
     font-weight: normal;
     font-style: normal;
+}
+
+h1:hover {
+    text-decoration: underline;
 }
 
 .read-books {
@@ -64,4 +70,95 @@ small {
 figure img {
     float: left;
     margin-right: 2em;
+}
+
+.btn {
+    position: relative;
+    background-color: beige;
+    padding: 0.5em;
+    padding-left: 1em;
+    padding-right: 1em;
+    border-radius: 10px;
+    font-size: 1.5em;
+    left: 25em;
+    bottom: 3em;
+}
+
+.btn:hover {
+    background-color: rgb(218, 218, 199);
+}
+
+label {
+    margin-right: 10px;
+}
+
+#book_title {
+    text-transform: capitalize;
+    width: 80%;
+
+}
+
+#isbn {
+    width: 30%;
+}
+
+#author {
+    text-transform: capitalize;
+    width: 44%;
+}
+
+#summary {
+    text-transform: capitalize;
+    width: 100%;
+    height: 50em;
+}
+
+.isbn {
+    margin-right: 10px;
+}
+
+#note {
+    text-transform: capitalize;
+    width: 100%;
+    height: 100em;
+}
+
+.text-zone {
+    position: relative;
+    left: 50%;
+    word-wrap: break-word;
+}
+
+.submit {
+    position: relative;
+    left: 50%;
+}
+
+.social-media {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.social-media li {
+    list-style-type: none;
+}
+
+.social-media ul {
+    display: flex;
+    gap: 30px;
+}
+
+.copyright>p {
+    font-size: 1.2rem;
+}
+
+.copyright {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.book h3{
+    color: brown;
 }

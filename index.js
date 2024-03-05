@@ -57,7 +57,27 @@ app.get("/book/:name", async (req, res) => {
 });
 
 app.get("/add", async (req, res) => {
-    res.render("add.ejs");
+    const result = await db.query("SELECT id FROM books ORDER BY id DESC LIMIT 1");
+    var lastId = result.rows[0].id;
+    var id = lastId + 1;
+    res.render("add.ejs", { id: id });
+});
+
+app.post("/add", async (req, res) => {
+    console.log(req.body);
+    const bookTitle = req.body.book_title;
+    const isbn = req.body.isbn;
+    const author = req.body.author;
+    const summary = req.body.summary;
+    const note = req.body.note;
+    const likeScore = req.body.like_score;
+    const dateRead = req.body.date_read;
+    const bookId = req.body.book_id;
+
+    await db.query("INSERT INTO books(book_title, isbn, author) VALUES($1,$2,$3)", [bookTitle, isbn, author]);
+    await db.query("INSERT INTO notes VALUES($1,$2,$3)", [summary, note, bookId]);
+    await db.query("INSERT INTO scores VALUES($1,$2,$3)", [likeScore, bookId, dateRead]);
+    res.redirect("/");
 });
 
 // Starting the server and listening on the specified port
