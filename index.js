@@ -56,6 +56,10 @@ app.get("/book/:name", async (req, res) => {
     });
 });
 
+app.get("/add", async (req, res) => {
+    res.render("add.ejs");
+});
+
 // Starting the server and listening on the specified port
 app.listen(port, () => {
     console.log(`Listening on port ${port}`); // Logging a message indicating that the server is running
