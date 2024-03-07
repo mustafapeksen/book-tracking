@@ -97,11 +97,9 @@ app.get("/book/:id", async (req, res) => {
 
 
 app.get("/add", async (req, res) => {
-    const result = await db.query("SELECT id FROM books ORDER BY id DESC LIMIT 1");
-    var lastId = result.rows[0].id;
-    var id = lastId + 1;
-    res.render("add.ejs", { id: id });
+    res.render("add.ejs");
 });
+
 
 function capitalizeEveryWord(sentence) {
     // Convert the sentence to lowercase and split it into words
@@ -127,13 +125,24 @@ app.post("/add", async (req, res) => {
     const note = req.body.note;
     const likeScore = req.body.like_score;
     const dateRead = req.body.date_read;
-    const bookId = req.body.book_id;
 
-    await db.query("INSERT INTO books(book_title, isbn, author) VALUES($1,$2,$3)", [bookTitle, isbn, author]);
-    await db.query("INSERT INTO notes VALUES($1,$2,$3)", [summary, note, bookId]);
-    await db.query("INSERT INTO scores VALUES($1,$2,$3)", [likeScore, bookId, dateRead]);
-    res.redirect("/");
+    try {
+        // Inserting values into respective tables
+        await db.query("INSERT INTO books(book_title, isbn, author) VALUES($1, $2, $3)", [bookTitle, isbn, author]);
+        // Getting the auto-generated id of the newly inserted book
+        const result = await db.query("SELECT lastval()");
+        const bookId = result.rows[0].lastval;
+        
+        await db.query("INSERT INTO notes(summary, note, book_id) VALUES($1, $2, $3)", [summary, note, bookId]);
+        await db.query("INSERT INTO scores(like_score, book_id, date_read) VALUES($1, $2, $3)", [likeScore, bookId, dateRead]);
+
+        res.redirect("/");
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
 });
+
 
 app.get("/edit/:id", async (req, res) => {
     try {

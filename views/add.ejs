@@ -12,7 +12,8 @@
         <label class="text-zone" for="note">Notlar</label><br /><br />
         <textarea class="book-input" name="note" id="note" cols="30" rows="10"></textarea><br /><br />
 
-        <input hidden="true" required type="number" name="book_id" id="book_id" value=<%=id %>>
+        <!-- <input hidden="true" required type="number" name="book_id" id="book_id" value=id> -->
+        <!-- Book ID alanını kaldırdık -->
         <label for="like_score">10 üzerinden ne kadar sevdin?</label>
         <input class="book-input" type="number" min="0" max="10" required name="like_score" id="like_score"><br /><br />
         <label for="date_read">Kitabı Bitirdiğin tarih: </label>
@@ -22,6 +23,4 @@
         <input class="submit" type="submit" value="Kitabı Kaydet">
     </form><br /><br />
 
-
-
-    <%- include('partials/footer.ejs') %>
+<%- include('partials/footer.ejs') %>
