@@ -21,15 +21,39 @@ db.connect(); // Connecting to the PostgreSQL database
 
 // Handling GET requests to the root endpoint
 app.get("/", async (req, res) => {
-    // Querying the database to retrieve book information including title, ISBN, author, etc.
-    const result = await db.query("SELECT books.book_title,books.isbn,books.author,books.id , scores.date_read,scores.like_score, notes.summary "+
-    "FROM books JOIN scores ON books.id = scores.book_id JOIN notes ON books.id = notes.book_id ORDER BY scores.like_score DESC");
-    
-    const information = result.rows; // Storing the retrieved data from the database
+    let sortBy = req.query.sortBy || 'best'; // Varsayılan sıralama kriteri
 
-    // Rendering the 'index.ejs' template with the retrieved book information
-    res.render("index.ejs", { bookItems: information });
+    let query = "SELECT books.book_title, books.isbn, books.author, books.id, scores.date_read, scores.like_score, notes.summary " +
+        "FROM books JOIN scores ON books.id = scores.book_id JOIN notes ON books.id = notes.book_id ";
+
+    console.log(req.query.sortBy);
+
+
+    switch (sortBy) {
+        case 'newest':
+            query += "ORDER BY books.id DESC";
+            break;
+        case 'best':
+            query += "ORDER BY scores.like_score DESC";
+            break;
+        case 'title':
+            query += "ORDER BY books.book_title ASC";
+            break;
+        default:
+            query += "ORDER BY scores.like_score DESC";
+    }
+
+    try {
+        const result = await db.query(query);
+        console.log(req.query);
+        const information = result.rows;
+        res.render("index.ejs", { bookItems: information });
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
 });
+
 
 // Handling GET requests to the '/book/:name' endpoint
 app.get("/book/:id", async (req, res) => {
