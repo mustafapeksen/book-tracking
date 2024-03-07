@@ -185,3 +185,9 @@ label {
     cursor: pointer;
     transform: scale(0.9);
 }
+
+.edit {
+    color: #000;
+    font-size: 1em;
+    left: 34em;
+}

@@ -1,6 +1,9 @@
 <%- include('partials/header.ejs') %>
 
     <div class="content">
+        <form action="/edit/<%- books.id %>" method="get">
+            <input class="btn edit" type="submit" value="Düzenle">
+        </form>
         <figure>
             <a href="https://covers.openlibrary.org/b/isbn/<%-books.isbn%>-L.jpg"><img loading="lazy"
                     src="https://covers.openlibrary.org/b/isbn/<%-books.isbn%>-M.jpg" alt="<%- books.book_title %>"></a>

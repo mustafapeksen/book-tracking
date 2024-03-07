@@ -1,0 +1,51 @@
+<%- include('partials/header.ejs') %>
+
+<div class="content">
+    <figure>
+        <a href="https://covers.openlibrary.org/b/isbn/<%- books.isbn %>-L.jpg"><img loading="lazy"
+                src="https://covers.openlibrary.org/b/isbn/<%- books.isbn %>-M.jpg" alt="<%- books.book_title %>"></a>
+    </figure>
+    <form action="/edit/<%- books.id %>" method="post">
+
+        <label for="book_title"> Kitabın Adı:</label>
+        <input type="text" name="book_title" required id="book_title" value="<%= books.book_title %>"> <br />
+        <label for="author"> Yazar: </label>
+        <input type="text" name="author" required id="author" value="<%= books.author %>"> <br />
+
+        <label for="isbn">ISBN:</label>
+        <input type="number" name="isbn" id="isbn" required value="<%= books.isbn %>"><br />
+
+        <label for="date_read">Okuma Tarihi:</label>
+        <input type="text" name="date_read" id="date_read" required value="<%= books.date_read %>">
+        <br />
+
+        <label for="like_score"> Bu kitabı x/10 sevdim:</label>
+        <input type="number" name="like_score" min="0" max="10" required id="like_score"
+            value="<%= books.like_score %>">
+        <br />
+
+        <p class="amazon-page"><a href="https://www.amazon.com.tr/s?k=<%- books.isbn %>">Amazon sayfasına</a>
+            göz
+            atabilirsiniz.</p>
+
+        <h3>Özet</h3>
+        <textarea name="summary" id="summary" cols="30" rows="10">
+            <% summaryParagraphs.forEach(paragraph => { %>
+                <%= paragraph %>
+            <% }) %>
+        </textarea>
+
+        <h3>Kitap Hakkında Düşüncelerim</h3>
+        <textarea name="note" id="note" cols="30" rows="10">
+            <% noteParagraphs.forEach(paragraph => { %>
+                <%= paragraph %>
+            <% }) %>
+        </textarea>
+        <input class="btn edit" type="submit" value="Onayla">
+
+    </form>
+    <h4>Kitabın Yazarı</h4>
+    <img src="https://covers.openlibrary.org/a/olid/<%- olid %>-M.jpg" alt="<%- books.author %>">
+</div>
+
+<%- include('partials/footer.ejs') %>

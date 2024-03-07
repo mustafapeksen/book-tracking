@@ -34,12 +34,12 @@
                     <input type="number" hidden="true" name="book-id" id="book-id" value="<%- item.id %>">
                 </form>
                 <figure>
-                    <a href="/book/<%- item.book_title %>">
+                    <a href="/book/<%- item.id %>">
                         <img loading="lazy" src="https://covers.openlibrary.org/b/isbn/<%-item.isbn%>-M.jpg"
                             alt="<%- item.book_title %>">
                     </a>
                 </figure>
-                <a href="/book/<%- item.book_title %>">
+                <a href="/book/<%- item.id %>">
                     <h3>
                         <%= item.book_title %> - by <%= item.author%>
                     </h3>
