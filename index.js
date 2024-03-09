@@ -36,7 +36,6 @@ app.get("/", async (req, res) => {
         let query = "SELECT books.book_title, books.isbn, books.author, books.id, scores.date_read, scores.like_score, notes.summary " +
             "FROM books JOIN scores ON books.id = scores.book_id JOIN notes ON books.id = notes.book_id ";
 
-        console.log(req.query.sortBy);
 
         // Append ORDER BY clause based on the sorting criteria
         switch (sortBy) {
@@ -55,7 +54,6 @@ app.get("/", async (req, res) => {
 
         // Execute the SQL query to fetch book information from the database
         const result = await db.query(query);
-        console.log(req.query);
 
         // Extract information from the query result
         const information = result.rows;
