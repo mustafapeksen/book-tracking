@@ -19,36 +19,51 @@ const db = new pg.Client({
 });
 db.connect(); // Connecting to the PostgreSQL database
 
+
+// Global Error Handling Middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Internal Server Error');
+});
+
 // Handling GET requests to the root endpoint
 app.get("/", async (req, res) => {
-    let sortBy = req.query.sortBy || 'best'; // Varsayılan sıralama kriteri
-
-    let query = "SELECT books.book_title, books.isbn, books.author, books.id, scores.date_read, scores.like_score, notes.summary " +
-        "FROM books JOIN scores ON books.id = scores.book_id JOIN notes ON books.id = notes.book_id ";
-
-    console.log(req.query.sortBy);
-
-
-    switch (sortBy) {
-        case 'newest':
-            query += "ORDER BY books.id DESC";
-            break;
-        case 'best':
-            query += "ORDER BY scores.like_score DESC";
-            break;
-        case 'title':
-            query += "ORDER BY books.book_title ASC";
-            break;
-        default:
-            query += "ORDER BY scores.like_score DESC";
-    }
-
     try {
+        // Set default sorting criteria if sortBy parameter is not provided
+        let sortBy = req.query.sortBy || 'best'; // Default sorting criteria
+
+        // Construct the SQL query based on the sorting criteria
+        let query = "SELECT books.book_title, books.isbn, books.author, books.id, scores.date_read, scores.like_score, notes.summary " +
+            "FROM books JOIN scores ON books.id = scores.book_id JOIN notes ON books.id = notes.book_id ";
+
+        console.log(req.query.sortBy);
+
+        // Append ORDER BY clause based on the sorting criteria
+        switch (sortBy) {
+            case 'newest':
+                query += "ORDER BY books.id DESC";
+                break;
+            case 'best':
+                query += "ORDER BY scores.like_score DESC";
+                break;
+            case 'title':
+                query += "ORDER BY books.book_title ASC";
+                break;
+            default:
+                query += "ORDER BY scores.like_score DESC";
+        }
+
+        // Execute the SQL query to fetch book information from the database
         const result = await db.query(query);
         console.log(req.query);
+
+        // Extract information from the query result
         const information = result.rows;
+
+        // Render the 'index.ejs' template with book information
         res.render("index.ejs", { bookItems: information });
     } catch (error) {
+        // Handle errors that occur during database query execution
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
@@ -96,9 +111,17 @@ app.get("/book/:id", async (req, res) => {
 });
 
 
-app.get("/add", async (req, res) => {
-    res.render("add.ejs");
+// Handling GET requests to the '/add' endpoint
+app.get("/add", (req, res) => {
+    try {
+        res.render("add.ejs");
+    } catch (error) {
+        // Handle any errors that occur during the rendering process
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
 });
+
 
 
 function capitalizeEveryWord(sentence) {
@@ -118,30 +141,33 @@ function capitalizeEveryWord(sentence) {
 
 
 app.post("/add", async (req, res) => {
-    const bookTitle = capitalizeEveryWord(req.body.book_title);
-    const isbn = capitalizeEveryWord(req.body.isbn);
-    const author = capitalizeEveryWord(req.body.author);
-    const summary = req.body.summary;
-    const note = req.body.note;
-    const likeScore = req.body.like_score;
-    const dateRead = req.body.date_read;
-
     try {
-        // Inserting values into respective tables
-        await db.query("INSERT INTO books(book_title, isbn, author) VALUES($1, $2, $3)", [bookTitle, isbn, author]);
-        // Getting the auto-generated id of the newly inserted book
-        const result = await db.query("SELECT lastval()");
-        const bookId = result.rows[0].lastval;
-        
+        const { book_title, isbn, author, summary, note, like_score, date_read } = req.body;
+
+        // Validate parameters (you can implement more thorough validation as needed)
+        if (!book_title || !isbn || !author || !summary || !note || !like_score || !date_read) {
+            throw new Error('Missing required parameters');
+        }
+
+        // Capitalize the first letter of each word in bookTitle, isbn, and author
+        const bookTitle = capitalizeEveryWord(book_title);
+        const capitalizedIsbn = capitalizeEveryWord(isbn);
+        const capitalizedAuthor = capitalizeEveryWord(author);
+
+        // Insert values into respective tables
+        const bookInsertResult = await db.query("INSERT INTO books(book_title, isbn, author) VALUES($1, $2, $3) RETURNING id", [bookTitle, capitalizedIsbn, capitalizedAuthor]);
+        const bookId = bookInsertResult.rows[0].id;
+
         await db.query("INSERT INTO notes(summary, note, book_id) VALUES($1, $2, $3)", [summary, note, bookId]);
-        await db.query("INSERT INTO scores(like_score, book_id, date_read) VALUES($1, $2, $3)", [likeScore, bookId, dateRead]);
+        await db.query("INSERT INTO scores(like_score, book_id, date_read) VALUES($1, $2, $3)", [like_score, bookId, date_read]);
 
         res.redirect("/");
     } catch (error) {
-        console.error("Error:", error);
+        console.error("Error:", error.message); // Log the error message for better troubleshooting
         res.status(500).send("Internal Server Error");
     }
 });
+
 
 
 app.get("/edit/:id", async (req, res) => {
@@ -193,15 +219,15 @@ app.post("/edit/:id", async (req, res) => {
         const note = req.body.note;
         const likeScore = req.body.like_score;
         const dateRead = req.body.date_read;
-        const bookId = req.params.id; // Parametreyi düzeltin
+        const bookId = req.params.id; // Fix the parameter
 
         // Query the database to retrieve detailed information about a specific book
         const result = await db.query("SELECT books.book_title, books.isbn, books.author FROM books WHERE id = $1", [bookId]);
         const information = result.rows[0]; // Store the retrieved book information
 
-        let olid = ''; // Default bir değer atayın
+        let olid = ''; // Assign a default value
 
-        // ISBN varsa API isteğini yapın
+        // If there is an ISBN, make the API request
         if (information && information.isbn) {
             try {
                 const resultJson = await axios.get(`https://covers.openlibrary.org/b/isbn/${information.isbn}.json`);
@@ -212,7 +238,7 @@ app.post("/edit/:id", async (req, res) => {
             }
         }
 
-        // Veritabanını güncelleyin
+        // Update the database
         await db.query("UPDATE books SET book_title = $1, isbn = $2, author = $3 WHERE id = $4", [bookTitle, isbn, author, bookId]);
         await db.query("UPDATE notes SET summary = $1, note = $2 WHERE book_id = $3", [summary, note, bookId]);
         await db.query("UPDATE scores SET like_score = $1, date_read = $2 WHERE book_id = $3", [likeScore, dateRead, bookId]);
@@ -226,12 +252,21 @@ app.post("/edit/:id", async (req, res) => {
 
 
 app.post("/delete", async (req, res) => {
-    const deleteId = req.body['book-id'];
-    await db.query("DELETE FROM scores WHERE book_id = $1", [deleteId]);
-    await db.query("DELETE FROM notes WHERE book_id = $1", [deleteId]);
-    await db.query("DELETE FROM books WHERE id = $1", [deleteId]);
+    try {
+        const deleteId = req.body['book-id'];
 
-    res.redirect("/");
+        // Delete related records from child tables first
+        await db.query("DELETE FROM scores WHERE book_id = $1", [deleteId]);
+        await db.query("DELETE FROM notes WHERE book_id = $1", [deleteId]);
+
+        // Then delete the book record from the 'books' table
+        await db.query("DELETE FROM books WHERE id = $1", [deleteId]);
+
+        res.redirect("/"); // Redirect to the root page after successful deletion
+    } catch (error) {
+        console.error("Error deleting book:", error);
+        res.status(500).send("Internal Server Error");
+    }
 });
 
 // Starting the server and listening on the specified port
