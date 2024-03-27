@@ -20,7 +20,7 @@ This web application allows you to track the books you have read and share the n
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/your-username/book-tracking.git`
+1. Clone the repository: `git clone https://github.com/mustafapeksen/book-tracking.git`
 2. Install dependencies: `npm install`
 3. Set up the PostgreSQL database.
 4. Start the application: `node index.js`
