@@ -1,8 +1,8 @@
 import express from "express"; // Importing the express module for creating the web server
-import pg from "pg"; // Importing the pg module for interacting with PostgreSQL database
 import axios from "axios"; // Importing axios module for making HTTP requests
 import bodyParser from "body-parser"; // Importing bodyParser module for parsing incoming request bodies
-
+import pkg from 'pg';
+const { Client } = pkg;
 const app = express(); // Creating an instance of express
 const port = 3000; // Port number on which the server will listen
 
@@ -10,14 +10,23 @@ app.use(express.static("public")); // Serving static files from the 'public' dir
 app.use(bodyParser.urlencoded({ extended: true })); // Using bodyParser middleware to parse urlencoded request bodies
 
 // Creating a new PostgreSQL client instance to connect to the database
-const db = new pg.Client({
-    user: "postgres", // PostgreSQL username
-    host: "localhost", // PostgreSQL host
-    database: "books", // PostgreSQL database name
-    password: "12345", // PostgreSQL password
-    port: 5432 // PostgreSQL port number
+
+
+
+const db = new Client({
+    user: "kelzebra",
+    host: "dpg-cohqii8l5elc73csecng-a.oregon-postgres.render.com",
+    database: "books_krse",
+    password: "SxBxfP1pI6hVgiPNYjCz147TsX1ZZp0M",
+    port: 5432,
+    ssl: {
+        rejectUnauthorized: false // SSL sertifikasını doğrulamayı reddetme
+    }
 });
-db.connect(); // Connecting to the PostgreSQL database
+
+db.connect()
+    .then(() => console.log('Connected to the database'))
+    .catch(err => console.error('Connection error', err.stack));
 
 
 // Global Error Handling Middleware
