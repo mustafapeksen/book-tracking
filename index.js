@@ -11,17 +11,6 @@ app.use(bodyParser.urlencoded({ extended: true })); // Using bodyParser middlewa
 
 // Creating a new PostgreSQL client instance to connect to the database
 
-const db = new Client({
-  user: "kelzebra",
-  host: "dpg-cohqii8l5elc73csecng-a.oregon-postgres.render.com",
-  database: "books_krse",
-  password: "SxBxfP1pI6hVgiPNYjCz147TsX1ZZp0M",
-  port: 5432,
-  ssl: {
-    rejectUnauthorized: false, // SSL sertifikasını doğrulamayı reddetme
-  },
-});
-
 const db = new Pool({
     connectionString: "postgres://kelzebra:SxBxfP1pI6hVgiPNYjCz147TsX1ZZp0M@dpg-cohqii8l5elc73csecng-a.oregon-postgres.render.com/books_krse",
     ssl: {
