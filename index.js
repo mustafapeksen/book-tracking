@@ -1,8 +1,8 @@
 import express from "express"; // Importing the express module for creating the web server
 import axios from "axios"; // Importing axios module for making HTTP requests
 import bodyParser from "body-parser"; // Importing bodyParser module for parsing incoming request bodies
-import pkg from "pg";
-const { Client } = pkg;
+import pkg from 'pg';
+const { Pool } = pkg; // Client kelimesini Pool olarak değiştirdik
 const app = express(); // Creating an instance of express
 const port = process.env.PORT || 3000; // Port number on which the server will listen
 
@@ -22,9 +22,12 @@ const db = new Client({
   },
 });
 
-db.connect()
-  .then(() => console.log("Connected to the database"))
-  .catch((err) => console.error("Connection error", err.stack));
+const db = new Pool({
+    connectionString: "postgres://kelzebra:SxBxfP1pI6hVgiPNYjCz147TsX1ZZp0M@dpg-cohqii8l5elc73csecng-a.oregon-postgres.render.com/books_krse",
+    ssl: {
+        rejectUnauthorized: false
+    }
+});
 
 // Global Error Handling Middleware
 app.use((err, req, res, next) => {
