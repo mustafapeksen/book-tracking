@@ -12,9 +12,18 @@ app.use(bodyParser.urlencoded({ extended: true })); // Using bodyParser middlewa
 // Creating a new PostgreSQL client instance to connect to the database
 
 const db = new Pool({
-    connectionString: "postgres://kelzebra:SxBxfP1pI6hVgiPNYjCz147TsX1ZZp0M@dpg-cohqii8l5elc73csecng-a.oregon-postgres.render.com/books_krse",
+    connectionString: "postgres://kelzebra:SxBxfP1pI6hVgiPNYjCz147TsX1ZZp0M@dpg-cohqii8l5elc73csecng-a/books_krse",
     ssl: {
         rejectUnauthorized: false
+    }
+});
+
+// Bağlantı test kodu
+db.query('SELECT NOW()', (err, res) => {
+    if (err) {
+        console.error('Veritabanına bağlanılamadı:', err.message);
+    } else {
+        console.log('Veritabanına BAŞARIYLA bağlanıldı. Tarih:', res.rows[0].now);
     }
 });
 
