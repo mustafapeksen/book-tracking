@@ -280,6 +280,5 @@ app.post("/delete", async (req, res) => {
 app.listen(port, "0.0.0.0", () => {
     console.log(`Listening on port ${port}`);
 }); // Logging a message indicating that the server is running
-});
 
 
