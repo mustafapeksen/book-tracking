@@ -4,7 +4,7 @@ import bodyParser from "body-parser"; // Importing bodyParser module for parsing
 import pkg from 'pg';
 const { Client } = pkg;
 const app = express(); // Creating an instance of express
-const port = "0.0.0.0"; // Port number on which the server will listen
+const port = process.env.PORT || 3000;  // Port number on which the server will listen
 
 app.use(express.static("public")); // Serving static files from the 'public' directory
 app.use(bodyParser.urlencoded({ extended: true })); // Using bodyParser middleware to parse urlencoded request bodies
@@ -277,8 +277,9 @@ app.post("/delete", async (req, res) => {
 });
 
 // Starting the server and listening on the specified port
-app.listen(port, () => {
-    console.log(`Listening on port ${port}`); // Logging a message indicating that the server is running
+app.listen(port, "0.0.0.0", () => {
+    console.log(`Listening on port ${port}`);
+}); // Logging a message indicating that the server is running
 });
 
 
