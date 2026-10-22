@@ -12,7 +12,9 @@ app.use(bodyParser.urlencoded({ extended: true })); // Using bodyParser middlewa
 // Creating a new PostgreSQL client instance to connect to the database
 
 const db = new Pool({
-    connectionString: "postgresql://books_krse_35x3_user:ApliZksbhdSOMC6jvPsci4HKWbmridKD@dpg-dbd5h1u7bikc73f6amcg-a/books_krse_35x3",
+    // "Internal Database URL" satırının yanındaki kopyala butonuna basıp 
+    // kopyaladığınız adresi buraya yapıştırın.
+    connectionString: "postgres://books_krse_35x3_user:ApliZksbhdSOMC6jvPsci4HKWbmridKD@dpg-dbd5h1u7bikc73f6amcg-a/books_krse_35x3", 
     ssl: {
         rejectUnauthorized: false
     }
